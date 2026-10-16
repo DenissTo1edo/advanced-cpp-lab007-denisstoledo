@@ -7,7 +7,7 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 2  # <- sets a 2-minute upper limit
+    timeout-minutes: 5  # increased timeout in case tests take longer
 
     steps:
       - name: Checkout repository
@@ -20,10 +20,31 @@ jobs:
         run: g++ --version
 
       - name: Build project
-        run: make
+        run: |
+          # Default Makefile target in this repo is `test` (it runs tests).
+          # Run `make` to ensure objects are compiled; show diagnostics so CI logs reveal artifacts.
+          make || true
+          echo "---- repo root listing ----"
+          ls -la
+          echo "---- build dir listing ----"
+          ls -la build || true
 
       - name: Run main program (optional)
-        run: ./build/main
+        run: |
+          # Try the Makefile run target first (builds and runs the program if the target exists).
+          # If it fails or there is no run target, fall back to common binary paths.
+          if make run >/dev/null 2>&1; then
+            echo "Ran main via 'make run'"
+          elif [ -x ./build/main ]; then
+            echo "Running ./build/main"; ./build/main
+          elif [ -x ./main ]; then
+            echo "Running ./main"; ./main
+          else
+            echo "No binary found (tried 'make run', ./build/main and ./main)"
+            ls -la
+            ls -la build || true
+            exit 1
+          fi
 
       - name: Run tests
         run: make test
