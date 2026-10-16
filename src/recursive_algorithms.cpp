@@ -4,74 +4,156 @@
 #include <utility>
 #include <vector>
 
-// TODO: Implement factorial recursively.
-// Base case: n == 0 or n == 1.
-// Recursive case: n * factorial(n - 1).
+namespace {
+int factorialRecursive(int n) {
+    if (n < 0) {
+        throw std::logic_error("factorial: negative input");
+    }
+    if (n <= 1) {
+        return 1;
+    }
+    return n * factorialRecursive(n - 1);
+}
+
+int fibonacciRecursive(int n) {
+    if (n < 0) {
+        throw std::logic_error("fibonacci: negative input");
+    }
+    if (n == 0) {
+        return 0;
+    }
+    if (n == 1) {
+        return 1;
+    }
+    return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+}
+
+int binarySearchRecursive(const std::vector<int>& array, int target, int left, int right) {
+    if (left > right) {
+        return -1;
+    }
+
+    const int mid = left + ((right - left) / 2);
+    if (array[mid] == target) {
+        return mid;
+    }
+    if (target < array[mid]) {
+        return binarySearchRecursive(array, target, left, mid - 1);
+    }
+    return binarySearchRecursive(array, target, mid + 1, right);
+}
+
+int arraySumRecursive(const std::vector<int>& array, std::size_t index) {
+    if (index >= array.size()) {
+        return 0;
+    }
+    return array[index] + arraySumRecursive(array, index + 1);
+}
+
+void reverseArrayRecursive(std::vector<int>& array, std::size_t left, std::size_t right) {
+    if (left >= right) {
+        return;
+    }
+
+    std::swap(array[left], array[right]);
+    reverseArrayRecursive(array, left + 1, right - 1);
+}
+}  // namespace
+
 int factorial(int n) {
-    (void)n;
-    throw std::logic_error("Student implementation required: factorial");
+    return factorialRecursive(n);
 }
 
-// TODO: Implement an iterative factorial comparison.
 int factorialIterative(int n) {
-    (void)n;
-    throw std::logic_error("Student implementation required: factorialIterative");
+    if (n < 0) {
+        throw std::logic_error("factorialIterative: negative input");
+    }
+
+    int result = 1;
+    for (int i = 2; i <= n; ++i) {
+        result *= i;
+    }
+    return result;
 }
 
-// TODO: Implement fibonacci recursively.
-// Base case: fib(0) = 0, fib(1) = 1.
-// Recursive case: fib(n) = fib(n - 1) + fib(n - 2).
 int fibonacci(int n) {
-    (void)n;
-    throw std::logic_error("Student implementation required: fibonacci");
+    return fibonacciRecursive(n);
 }
 
-// TODO: Implement iterative fibonacci comparison.
 int fibonacciIterative(int n) {
-    (void)n;
-    throw std::logic_error("Student implementation required: fibonacciIterative");
+    if (n < 0) {
+        throw std::logic_error("fibonacciIterative: negative input");
+    }
+
+    if (n == 0) {
+        return 0;
+    }
+    if (n == 1) {
+        return 1;
+    }
+
+    int previous = 0;
+    int current = 1;
+    for (int i = 2; i <= n; ++i) {
+        const int next = previous + current;
+        previous = current;
+        current = next;
+    }
+    return current;
 }
 
-// TODO: Implement recursive binary search on a sorted array.
-// Base case: target not found or left > right.
-// Recursive case: compare middle element and recurse on the appropriate half.
 int binarySearch(const std::vector<int>& array, int target) {
-    (void)array;
-    (void)target;
-    throw std::logic_error("Student implementation required: binarySearch");
+    if (array.empty()) {
+        return -1;
+    }
+    return binarySearchRecursive(array, target, 0, static_cast<int>(array.size()) - 1);
 }
 
-// TODO: Implement iterative binary search comparison.
 int binarySearchIterative(const std::vector<int>& array, int target) {
-    (void)array;
-    (void)target;
-    throw std::logic_error("Student implementation required: binarySearchIterative");
+    int left = 0;
+    int right = static_cast<int>(array.size()) - 1;
+
+    while (left <= right) {
+        const int mid = left + ((right - left) / 2);
+        if (array[mid] == target) {
+            return mid;
+        }
+        if (target < array[mid]) {
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+
+    return -1;
 }
 
-// TODO: Implement recursive array sum.
-// Base case: empty array.
-// Recursive case: first element + arraySum(rest-of-array).
 int arraySum(const std::vector<int>& array) {
-    (void)array;
-    throw std::logic_error("Student implementation required: arraySum");
+    return arraySumRecursive(array, 0);
 }
 
-// TODO: Implement iterative array sum comparison.
 int arraySumIterative(const std::vector<int>& array) {
-    (void)array;
-    throw std::logic_error("Student implementation required: arraySumIterative");
+    int sum = 0;
+    for (int value : array) {
+        sum += value;
+    }
+    return sum;
 }
 
-// TODO: Implement recursive in-place reversal.
-// Base case: size <= 1.
-// Recursive case: swap first and last elements, then recurse on the remaining middle.
 void reverseArray(std::vector<int>& array) {
-    (void)array;
-    throw std::logic_error("Student implementation required: reverseArray");
+    if (array.size() <= 1) {
+        return;
+    }
+    reverseArrayRecursive(array, 0, array.size() - 1);
 }
 
-// TODO: Implement iterative reverse comparison.
 void reverseArrayIterative(std::vector<int>& array) {
-    (void)array;
-    throw std::logic_error("Student implementation required: reverseArrayIterative");
+    int left = 0;
+    int right = static_cast<int>(array.size()) - 1;
+
+    while (left < right) {
+        std::swap(array[left], array[right]);
+        ++left;
+        --right;
+    }
 }
