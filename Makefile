@@ -19,7 +19,8 @@ TEST_EXECUTABLE := $(BUILD_DIR)/test.out
 
 .PHONY: all clean run test
 
-all: $(EXECUTABLE)
+# Default: run tests (project is test-first classroom exercise)
+all: test
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -50,4 +51,3 @@ run: $(EXECUTABLE)
 
 clean:
 	rm -rf $(BUILD_DIR)
-
